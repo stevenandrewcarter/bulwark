@@ -1,7 +1,3 @@
-//
-// Created by Steven Carter on 2018/05/11.
-//
-
 #include "GameDetails.h"
 
 void from_json(const json& j, GameDetails& p) {

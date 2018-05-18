@@ -1,7 +1,3 @@
-//
-// Created by Steven Carter on 2018/05/11.
-//
-
 #ifndef BULWARK_GAMEDETAILS_H
 #define BULWARK_GAMEDETAILS_H
 

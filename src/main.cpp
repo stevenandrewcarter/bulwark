@@ -8,8 +8,7 @@ int main() {
     ifstream i("state.json");
     if (i.is_open()) {
         i >> j;
-        Bulwark::State state;
-        state = j;
+        Bulwark::State state = j;
     }
     return 0;
 }

@@ -1,18 +1,21 @@
 #include "State.h"
 #include <iostream>
-
+#include "spdlog/spdlog.h"
+namespace spd = spdlog;
 namespace Bulwark {
+    auto console = spd::stdout_color_mt("console");
 
     void from_json(const json &j, State &s) {
+        console->info("Loading State!");
         s.gameDetails = j.at("gameDetails");
-        cout << "Loaded GameDetails" << endl;
-        std::for_each(j["players"].begin(), j["players"].end(), [&s](const json &player) {
+        console->info("Loaded GameDetails");
+        std::for_each(j.at("players").begin(), j.at("players").end(), [&s](const json &player) {
             Player p = player;
-            s.players.push_back(p);
+            s.players.push_back((Player)player);
         });
-        cout << "Loaded Players" << endl;
+        console->info("Loaded Players");
         s.gameMap = j.at("gameMap");
-        cout << "Loaded GameMap" << endl;
+        console->info("Loaded GameMap");
     }
 
     void from_json(const json &j, Player &p) {
@@ -37,27 +40,23 @@ namespace Bulwark {
     }
 
     void from_json(const json &j, GameMap &p) {
-        cout << j << endl;
         for_each(j.begin(), j.end(), [&p](const json &rows) {
             for_each(rows.begin(), rows.end(), [&p](const json &cell) {
                 p.x = cell.at("x").get<int>();
                 p.y = cell.at("y").get<int>();
-                cout << "Loading row " << p.x << " " << p.y << endl;
+                console->info("Loading row {0:d} {1:d}", p.x, p.y);
                 p.cellOwner = cell.at("cellOwner").get<string>();
-                for_each(cell["buildings"].begin(), cell["buildings"].end(), [&p](const json &building) {
-                    cout << building << endl;
+                for_each(cell.at("buildings").begin(), cell.at("buildings").end(), [&p](const json &building) {
                     Building b = building;
                     p.buildings.push_back(b);
                 });
-                cout << "Loaded buildings" << endl;
-                for_each(cell["missiles"].begin(), cell["missiles"].end(), [&p](const json &missle) {
-                    cout << missle << endl;
+                console->info("Loaded buildings");
+                for_each(cell.at("missiles").begin(), cell.at("missiles").end(), [&p](const json &missle) {
                     Missle m = missle;
                     p.missles.push_back(m);
                 });
-                cout << "Loaded missiles" << endl;
+                console->info("Loaded missiles");
             });
-            cout << rows << endl;
         });
     }
 

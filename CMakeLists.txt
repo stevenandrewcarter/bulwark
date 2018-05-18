@@ -3,4 +3,4 @@ project(bulwark)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(bulwark src/main.cpp src/vendor/json.h src/GameDetails.cpp src/GameDetails.h src/GameMap.cpp src/GameMap.h src/Player.cpp src/Player.h src/State.cpp src/State.h)
+add_executable(bulwark src/main.cpp src/vendor/json.h src/State.cpp src/State.h src/Agent.cpp src/Agent.h)

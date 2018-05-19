@@ -1,6 +1,7 @@
 #include "State.h"
 #include <iostream>
-#include "spdlog/spdlog.h"
+#include "vendor/spdlog/spdlog.h"
+
 namespace spd = spdlog;
 namespace Bulwark {
     auto console = spd::stdout_color_mt("console");
@@ -11,7 +12,7 @@ namespace Bulwark {
         console->info("Loaded GameDetails");
         std::for_each(j.at("players").begin(), j.at("players").end(), [&s](const json &player) {
             Player p = player;
-            s.players.push_back((Player)player);
+            s.players.push_back(p);
         });
         console->info("Loaded Players");
         s.gameMap = j.at("gameMap");

@@ -10,7 +10,7 @@ namespace Bulwark {
         console->info("Loading State!");
         s.gameDetails = j.at("gameDetails");
         console->info("Loaded GameDetails");
-        std::for_each(j.at("players").begin(), j.at("players").end(), [&s](const json &player) {
+        for_each(j.at("players").begin(), j.at("players").end(), [&s](const json &player) {
             Player p = player;
             s.players.push_back(p);
         });
@@ -20,7 +20,7 @@ namespace Bulwark {
     }
 
     void from_json(const json &j, Player &p) {
-        p.playerType = j.at("playerType").get<std::string>();
+        p.playerType = j.at("playerType").get<string>();
         p.energy = j.at("health").get<int>();
         p.health = j.at("health").get<int>();
         p.hitsTaken = j.at("hitsTaken").get<int>();
@@ -72,10 +72,10 @@ namespace Bulwark {
         b.destroyMultiplier = j.at("destroyMultiplier").get<int>();
         b.constructionScore = j.at("constructionScore").get<int>();
         b.energyGeneratedPerTurn = j.at("energyGeneratedPerTurn").get<int>();
-        b.buildingType = j.at("buildingType").get<std::string>();
+        b.buildingType = j.at("buildingType").get<string>();
         b.x = j.at("x").get<int>();
         b.y = j.at("y").get<int>();
-        b.playerType = j.at("playerType").get<std::string>();
+        b.playerType = j.at("playerType").get<string>();
     }
 
     void from_json(const json &j, Missle &m) {

@@ -28,9 +28,10 @@ namespace Bulwark {
         int health;
         int hitsTaken;
         int score;
+        std::map<int, double> cellCost;
     };
 
-    struct Missle {
+    struct Missile {
         int damage;
         int speed;
         int x;
@@ -55,18 +56,27 @@ namespace Bulwark {
         std::string playerType;
     };
 
-    struct GameMap {
+    struct Cell {
         int x;
         int y;
         std::list<Building> buildings;
-        std::list<Missle> missles;
+        std::list<Missile> missiles;
         std::string cellOwner;
+
+        double calculateCost();
+    };
+
+    struct GameMap {
+        std::map<int, std::map<int, Cell>> cells;
     };
 
     struct State {
         GameDetails gameDetails;
         std::list<Player> players;
         GameMap gameMap;
+
+        void calculateCellCosts();
+        Player *getPlayer(const std::string &playerType);
     };
 
     void from_json(const json &j, Player &p);
@@ -81,7 +91,7 @@ namespace Bulwark {
 
     void from_json(const json &j, Building &p);
 
-    void from_json(const json &j, Missle &p);
+    void from_json(const json &j, Missile &p);
 }
 
 #endif //BULWARK_STATE_H

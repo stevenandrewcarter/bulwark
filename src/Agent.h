@@ -2,7 +2,7 @@
 #define BULWARK_AGENT_H
 
 namespace Bulwark {
-    class State;
+    struct State;
 
 /**
  * Bulwark agent will take a input state and calculate the move that
@@ -10,7 +10,7 @@ namespace Bulwark {
  */
     class Agent {
     public:
-        void Agent(State *state);
+        Agent(State *state);
 
         void Calculate();
 

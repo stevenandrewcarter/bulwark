@@ -43,20 +43,20 @@ namespace Bulwark {
     void from_json(const json &j, GameMap &p) {
         for_each(j.begin(), j.end(), [&p](const json &rows) {
             for_each(rows.begin(), rows.end(), [&p](const json &cell) {
-                p.x = cell.at("x").get<int>();
-                p.y = cell.at("y").get<int>();
-                console->info("Loading row {0:d} {1:d}", p.x, p.y);
-                p.cellOwner = cell.at("cellOwner").get<string>();
-                for_each(cell.at("buildings").begin(), cell.at("buildings").end(), [&p](const json &building) {
+                Cell c;
+                c.x = cell.at("x").get<int>();
+                c.y = cell.at("y").get<int>();
+                console->info("Loading row {0:d} {1:d}", c.x, c.y);
+                c.cellOwner = cell.at("cellOwner").get<string>();
+                for_each(cell.at("buildings").begin(), cell.at("buildings").end(), [&c](const json &building) {
                     Building b = building;
-                    p.buildings.push_back(b);
+                    c.buildings.push_back(b);
                 });
-                console->info("Loaded buildings");
-                for_each(cell.at("missiles").begin(), cell.at("missiles").end(), [&p](const json &missle) {
-                    Missle m = missle;
-                    p.missles.push_back(m);
+                for_each(cell.at("missiles").begin(), cell.at("missiles").end(), [&c](const json &missle) {
+                    Missile m = missle;
+                    c.missiles.push_back(m);
                 });
-                console->info("Loaded missiles");
+                p.cells[c.x][c.y] = c;
             });
         });
     }
@@ -78,11 +78,42 @@ namespace Bulwark {
         b.playerType = j.at("playerType").get<string>();
     }
 
-    void from_json(const json &j, Missle &m) {
+    void from_json(const json &j, Missile &m) {
         m.damage = j.at("damage").get<int>();
         m.speed = j.at("speed").get<int>();
         m.x = j.at("x").get<int>();
         m.y = j.at("y").get<int>();
         m.playerType = j.at("playerType").get<string>();
+    }
+
+    void State::calculateCellCosts() {
+        for_each(this->gameMap.cells.begin(), this->gameMap.cells.end(), [this](std::pair<const int, std::map<int, Cell>> &cells) {
+            for_each(cells.second.begin(), cells.second.end(), [this](std::pair<const int, Cell> &cell) {
+                Player *player = getPlayer(cell.second.cellOwner);
+                if (player != nullptr) {
+                    player->cellCost[cell.second.y] += cell.second.calculateCost();
+                }
+            });
+        });
+    }
+
+    Player *State::getPlayer(const std::string &playerType) {
+        Player *player = nullptr;
+        for_each(this->players.begin(), this->players.end(), [&player, &playerType](Player &p) {
+            if (p.playerType == playerType) {
+                player = &p;
+            }
+        });
+        return player;
+    }
+
+    double Cell::calculateCost() {
+        double cost = 0;
+        // Calculate the building cost first
+        for_each(this->buildings.begin(), this->buildings.end(), [&cost](const Building &b) {
+            cost += b.constructionScore + b.health + b.weaponSpeed + b.weaponDamage + (b.weaponCooldownPeriod - b.weaponCooldownTimeLeft);
+        });
+        console->info("[{0:d} {1:d}] Calculating Cost: {2}", x, y, cost);
+        return cost;
     }
 }
